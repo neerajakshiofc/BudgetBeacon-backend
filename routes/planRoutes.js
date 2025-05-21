@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const FinancialGoal = require('../models/Plan'); // Ensure this path is correct
+import FinancialGoal from '../models/Plan.js'; // ✅ Correct ES module import
+
 
 // Mock auth middleware (replace with JWT middleware later)
 const mockAuth = (req, res, next) => {
@@ -64,4 +65,4 @@ router.delete('/financial-goals/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

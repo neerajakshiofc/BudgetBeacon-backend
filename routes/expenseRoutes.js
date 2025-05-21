@@ -1,8 +1,9 @@
 // routes/expenseRoutes.js
 
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const User = require('../models/User');
+import User from '../models/User.js';
+
 
 // POST /api/user/expenses
 // Adds a new expense to a specific user
@@ -27,4 +28,4 @@ router.post('/expenses', async (req, res) => {
   } 
 });
 
-module.exports = router;
+export default router;

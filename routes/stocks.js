@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const yahooFinance = require('yahoo-finance2').default;
+import yahooFinance from 'yahoo-finance2';
 
 // GET /api/stock-suggestions?symbol=TCS.NS
 router.get('/api/stock-suggestions', async (req, res) => {
@@ -56,4 +56,4 @@ router.get('/api/stock-suggestions', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

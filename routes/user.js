@@ -1,16 +1,25 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import express from 'express';
+import jwt from 'jsonwebtoken';             // Use ES module import
+import User from '../models/User.js';       // Import User model
 const router = express.Router();
 
+// Auth middleware
 const auth = async (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(403).send('Token missing');
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  req.user = await User.findById(decoded.id);
-  next();
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(403).send('Token missing');
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id);
+    
+    if (!req.user) return res.status(401).send('User not found');
+    next();
+  } catch (err) {
+    return res.status(401).send('Invalid token');
+  }
 };
 
+// Routes
 router.get('/me', auth, (req, res) => res.json(req.user));
 
 // Save expenses
@@ -34,4 +43,6 @@ router.post('/stocks', auth, async (req, res) => {
   res.json({ message: 'Saved stock' });
 });
 
-module.exports = router;
+
+
+export default User;

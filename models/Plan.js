@@ -1,7 +1,8 @@
 // models/Plan.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const goalSchema = new mongoose.Schema({
+// ✅ Define the schema
+const financialGoalSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   goal: { type: String, required: true },
   targetAmount: { type: Number, required: true },
@@ -9,4 +10,8 @@ const goalSchema = new mongoose.Schema({
   deadline: { type: String, required: true },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Plan', goalSchema);
+// ✅ Use the correct variable name in the model
+const FinancialPlanner = mongoose.model('FinancialGoal', financialGoalSchema);
+
+// ✅ Export the model
+export default FinancialPlanner;

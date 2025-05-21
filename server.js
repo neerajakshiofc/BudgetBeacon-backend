@@ -1,21 +1,18 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const connectDB = require('./config/db');
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
-dotenv.config();
+import connectDB from './config/db.js';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/user.js';
+import expenseRoutes from './routes/expenseRoutes.js';
+import planRoutes from './routes/planRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
+import stocksRoutes from './routes/stocks.js';
+import newsRoutes from './routes/news.js';
 
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user');
-const expenseRoutes = require('./routes/expenseRoutes');
-const planRoutes = require('./routes/planRoutes');
-const chatRoutes = require('./routes/chatRoutes');
-const stocksRoutes = require('./routes/stocks'); // ✅ Fixed typo
-const newsRoutes = require('./routes/news'); // ✅ Extracted
+dotenv.config();
 
 const app = express();
 
@@ -55,7 +52,7 @@ app.post("/api/login", (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
-app.use('/api/expenses', expenseRoutes); // 👈 Better route separation
+app.use('/api/expenses', expenseRoutes);
 app.use('/api/plan', planRoutes);
 app.use('/api/chat', chatRoutes);
 app.use(stocksRoutes);

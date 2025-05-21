@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const axios = require('axios');
+import axios from 'axios';
 
 const NEWS_API_KEY = process.env.NEWS_API_KEY; // ✅ Load from .env
 
@@ -25,4 +25,4 @@ router.get('/api/financial-news', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
