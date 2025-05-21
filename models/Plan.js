@@ -1,25 +1,12 @@
 // models/Plan.js
-
 const mongoose = require('mongoose');
 
-const planSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  goal: {
-    type: String,
-    required: true
-  },
-  targetAmount: {
-    type: Number,
-    required: true
-  },
-  deadline: {
-    type: Date,
-    required: true
-  }
+const goalSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  goal: { type: String, required: true },
+  targetAmount: { type: Number, required: true },
+  currentAmount: { type: Number, required: true },
+  deadline: { type: String, required: true },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Plan', planSchema);
+module.exports = mongoose.model('Plan', goalSchema);

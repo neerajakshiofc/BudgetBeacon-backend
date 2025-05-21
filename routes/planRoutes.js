@@ -1,42 +1,67 @@
-// routes/planRoutes.js
 const express = require('express');
 const router = express.Router();
+const FinancialGoal = require('../models/Plan'); // Ensure this path is correct
 
-// Temporary in-memory store
-let financialGoals = [
-  {
-    _id: '1',
-    goal: 'Emergency Fund',
-    targetAmount: 5000,
-    currentAmount: 1000,
-    deadline: '2025-12-31',
-  },
-];
+// Mock auth middleware (replace with JWT middleware later)
+const mockAuth = (req, res, next) => {
+  req.user = { id: 'user123' }; // Replace with JWT-decoded user ID in real app
+  next();
+};
 
-// GET
-router.get('/financial-goals', (req, res) => {
-  res.json(financialGoals);
+// Apply mock auth to all routes
+router.use(mockAuth);
+
+// GET all financial goals for the logged-in user
+router.get('/financial-goals', async (req, res) => {
+  try {
+    const goals = await FinancialGoal.find({ userId: req.user.id });
+    res.json(goals);
+  } catch (err) {
+    console.error('GET error:', err);
+    res.status(500).json({ message: 'Failed to fetch goals' });
+  }
 });
 
-// POST
-router.post('/financial-goals', (req, res) => {
+// POST a new financial goal
+router.post('/financial-goals', async (req, res) => {
   const { goal, targetAmount, currentAmount, deadline } = req.body;
-  const newGoal = {
-    _id: Date.now().toString(),
-    goal,
-    targetAmount,
-    currentAmount,
-    deadline,
-  };
-  financialGoals.push(newGoal);
-  res.status(201).json(newGoal);
+
+  if (!goal || !targetAmount || !currentAmount || !deadline) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
+
+  try {
+    const newGoal = await FinancialGoal.create({
+      userId: req.user.id,
+      goal,
+      targetAmount,
+      currentAmount,
+      deadline,
+    });
+    res.status(201).json(newGoal);
+  } catch (err) {
+    console.error('POST error:', err);
+    res.status(500).json({ message: 'Failed to save goal' });
+  }
 });
 
-// DELETE
-router.delete('/financial-goals/:id', (req, res) => {
-  const { id } = req.params;
-  financialGoals = financialGoals.filter(goal => goal._id !== id);
-  res.json({ message: 'Goal deleted' });
+// DELETE a financial goal by ID for the current user
+router.delete('/financial-goals/:id', async (req, res) => {
+  try {
+    const deletedGoal = await FinancialGoal.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user.id,
+    });
+
+    if (!deletedGoal) {
+      return res.status(404).json({ message: 'Goal not found or unauthorized' });
+    }
+
+    res.json({ message: 'Goal deleted successfully' });
+  } catch (err) {
+    console.error('DELETE error:', err);
+    res.status(500).json({ message: 'Failed to delete goal' });
+  }
 });
 
 module.exports = router;

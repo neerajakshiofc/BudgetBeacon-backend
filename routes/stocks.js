@@ -1,8 +1,8 @@
 const express = require('express');
-const router = express.Router(); // ✅ DEFINE ROUTER
+const router = express.Router();
 const yahooFinance = require('yahoo-finance2').default;
 
-// Route: GET /api/stock-suggestions?symbol=TCS
+// GET /api/stock-suggestions?symbol=TCS.NS
 router.get('/api/stock-suggestions', async (req, res) => {
   const { symbol } = req.query;
 
@@ -11,15 +11,42 @@ router.get('/api/stock-suggestions', async (req, res) => {
   }
 
   try {
+    // Fetch latest quote
     const data = await yahooFinance.quote(symbol);
     if (!data || !data.regularMarketPrice) {
       return res.status(404).json({ message: 'Stock data not found for the symbol.' });
     }
 
+    // Historical data for last 5 days
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(endDate.getDate() - 5);
+
+    const history = await yahooFinance.historical(symbol, {
+      period1: startDate,
+      period2: endDate,
+      interval: '1d',
+    });
+
+    const formattedHistory = history.map((point) => ({
+      date: point.date.toISOString().split('T')[0],
+      price: point.close,
+    }));
+
+    // Respond with full stock data
     const stockData = {
       symbol: data.symbol,
+      name: data.shortName || data.longName || symbol,
       latestPrice: data.regularMarketPrice,
       change: data.regularMarketChangePercent,
+      currency: data.currency || 'INR',
+      dayHigh: data.regularMarketDayHigh,
+      dayLow: data.regularMarketDayLow,
+      volume: data.regularMarketVolume,
+      marketTime: data.regularMarketTime
+        ? new Date(data.regularMarketTime * 1000).toLocaleString()
+        : null,
+      history: formattedHistory,
     };
 
     res.json(stockData);
