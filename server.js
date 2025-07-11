@@ -69,6 +69,10 @@ app.use((err, req, res, next) => {
 
 // Start server
 
+app.use(cors({
+  origin: "https://neeru-s-project-budgetbeacon.web.app"
+}));
+
 app.get('/', (req, res) => {
   res.send('Budget Beacon Backend is running!');
 });
