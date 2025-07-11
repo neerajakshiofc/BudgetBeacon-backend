@@ -83,3 +83,6 @@ app.listen(PORT, () => {
 }).on('error', err => {
   console.error("❌ Server failed to start:", err.message);
 });
+
+
+app.use(express.json());
