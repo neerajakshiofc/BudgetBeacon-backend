@@ -10,7 +10,7 @@ import expenseRoutes from './routes/expenseRoutes.js';
 import planRoutes from './routes/planRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import stocksRoutes from './routes/stocks.js';
-import newsRoutes from './routes/news.js';
+import financialNewsRoute from './routes/financialNews.js';
 
 dotenv.config();
 
@@ -56,7 +56,7 @@ app.use('/api/expenses', expenseRoutes);
 app.use('/api/plan', planRoutes);
 app.use('/api/chat', chatRoutes);
 app.use(stocksRoutes);
-app.use('/', newsRoutes);
+app.use(financialNewsRoute);
 
 // JSON error handler
 app.use((err, req, res, next) => {
