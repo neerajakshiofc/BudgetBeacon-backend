@@ -16,17 +16,35 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// ✅ CORS Setup - allow Firebase & localhost
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://neeru-s-project-budgetbeacon.firebaseapp.com',
+  'https://neeru-s-project-budgetbeacon.web.app'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
+}));
+
+// ✅ JSON body parser
 app.use(express.json());
 
-// Connect to MongoDB
+// ✅ Connect to MongoDB
 connectDB();
 
-// Temporary in-memory user store (for testing/demo)
+// ✅ In-memory store for quick login test
 const users = [];
 
-// Register route
+// ✅ Basic login/register routes for testing/demo
 app.post("/api/register", (req, res) => {
   const { email, password } = req.body;
   const userExists = users.find((u) => u.email === email);
@@ -37,11 +55,9 @@ app.post("/api/register", (req, res) => {
   res.status(201).json({ message: "User registered successfully" });
 });
 
-// Login route
 app.post("/api/login", (req, res) => {
   const { email, password } = req.body;
   const user = users.find((u) => u.email === email && u.password === password);
-
   if (user || (email === 'test@example.com' && password === '123456')) {
     return res.json({ message: "Login successful" });
   } else {
@@ -49,16 +65,21 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-// API Routes
+// ✅ Mount API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/plan', planRoutes);
 app.use('/api/chat', chatRoutes);
-app.use(stocksRoutes);
-app.use(financialNewsRoute);
+app.use('/api', stocksRoutes);
+app.use('/api', financialNewsRoute);
 
-// JSON error handler
+// ✅ Health Check
+app.get('/', (req, res) => {
+  res.send('Budget Beacon Backend is running!');
+});
+
+// ✅ JSON error handler
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     console.error("Bad JSON received:", err.message);
@@ -67,31 +88,13 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// Start server
-
-
-app.get('/', (req, res) => {
-  res.send('Budget Beacon Backend is running!');
+// ✅ Fallback for 404
+app.get('*', (req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
 
-const allowedOrigins = [
-  'http://localhost:3000', // for local dev
-  'https://neeru-s-project-budgetbeacon.firebaseapp.com',
-  'https://neeru-s-project-budgetbeacon.web.app',
-];
-
-app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-}));
-
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
-}).on('error', err => {
-  console.error("❌ Server failed to start:", err.message);
 });
-
-
-app.use(express.json());
