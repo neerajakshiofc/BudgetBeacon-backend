@@ -75,6 +75,7 @@ app.get('/', (req, res) => {
 });
 
 const allowedOrigins = [
+  'http://localhost:3000', // for local dev
   'https://neeru-s-project-budgetbeacon.firebaseapp.com',
   'https://neeru-s-project-budgetbeacon.web.app',
 ];
