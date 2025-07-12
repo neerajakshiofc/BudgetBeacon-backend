@@ -72,7 +72,7 @@ app.post("/api/login", (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/expenses', expenseRoutes);
-app.use('/api', planRoutes);
+app.use('/api/plan', planRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api', stocksRoutes);
 app.use('/api', financialNewsRoute);
