@@ -35,6 +35,9 @@ app.use(cors({
   credentials: true
 }));
 
+// ✅ Add this line ↓↓↓
+app.options('*', cors());
+
 // ✅ JSON body parser
 app.use(express.json());
 
