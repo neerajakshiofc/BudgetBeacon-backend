@@ -69,13 +69,21 @@ app.use((err, req, res, next) => {
 
 // Start server
 
-app.use(cors({
-  origin: "https://neeru-s-project-budgetbeacon.web.app"
-}));
 
 app.get('/', (req, res) => {
   res.send('Budget Beacon Backend is running!');
 });
+
+const allowedOrigins = [
+  'https://neeru-s-project-budgetbeacon.firebaseapp.com',
+  'https://neeru-s-project-budgetbeacon.web.app',
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
