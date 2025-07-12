@@ -3,7 +3,7 @@ const router = express.Router();
 import yahooFinance from 'yahoo-finance2';
 
 // GET /api/stock-suggestions?symbol=TCS.NS
-router.get('/api/stock-suggestions', async (req, res) => {
+router.get('/stock-suggestions', async (req, res) => {
   const { symbol } = req.query;
 
   if (!symbol) {
