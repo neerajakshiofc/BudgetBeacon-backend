@@ -5,7 +5,7 @@ import xml2js from 'xml2js';
 
 const router = express.Router();
 
-router.get('/api/financial-news', async (req, res) => {
+router.get('/financial-news', async (req, res) => {
   try {
     const rssUrl = 'https://economictimes.indiatimes.com/rss/markets/rssfeeds/1977021501.cms';
     const response = await axios.get(rssUrl);
