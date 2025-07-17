@@ -102,9 +102,12 @@ app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
 
-require('dotenv').config();
+const mongoose = require('mongoose');
+require('dotenv').config(); // Load .env file
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-});
+})
+.then(() => console.log('MongoDB Connected'))
+.catch((err) => console.error('Error connecting to MongoDB:', err));

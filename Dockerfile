@@ -11,7 +11,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the code
-COPY . .
+COPY .env .env
 
 # Expose backend port (adjust if needed)
 EXPOSE 5000
