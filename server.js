@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 
 import connectDB from './config/db.js';
@@ -16,7 +15,6 @@ dotenv.config();
 
 const app = express();
 
-// ✅ CORS Setup - allow Firebase & localhost
 const allowedOrigins = [
   'http://localhost:3000',
   'https://neeru-s-project-budgetbeacon.firebaseapp.com',
@@ -35,19 +33,15 @@ app.use(cors({
   credentials: true
 }));
 
-// ✅ Add this line ↓↓↓
 app.options('*', cors());
-
-// ✅ JSON body parser
 app.use(express.json());
 
 // ✅ Connect to MongoDB
-connectDB();
+connectDB(); // uses the URI from .env
 
-// ✅ In-memory store for quick login test
+// ✅ In-memory store for demo
 const users = [];
 
-// ✅ Basic login/register routes for testing/demo
 app.post("/api/register", (req, res) => {
   const { email, password } = req.body;
   const userExists = users.find((u) => u.email === email);
@@ -68,7 +62,6 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-// ✅ Mount API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/expenses', expenseRoutes);
@@ -77,12 +70,10 @@ app.use('/api/chat', chatRoutes);
 app.use('/api', stocksRoutes);
 app.use('/api', financialNewsRoute);
 
-// ✅ Health Check
 app.get('/', (req, res) => {
   res.send('Budget Beacon Backend is running!');
 });
 
-// ✅ JSON error handler
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     console.error("Bad JSON received:", err.message);
@@ -91,23 +82,11 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// ✅ Fallback for 404
 app.get('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
-
-const mongoose = require('mongoose');
-require('dotenv').config(); // Load .env file
-
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('MongoDB Connected'))
-.catch((err) => console.error('Error connecting to MongoDB:', err));
