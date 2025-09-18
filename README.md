@@ -1,5 +1,3 @@
-Here's a clear and professional README section you can include under **🚀 Running Locally with Docker** in your GitHub project for the `budget-backend`:
-
 ---
 
 ## 🐳 Running Locally with Docker
